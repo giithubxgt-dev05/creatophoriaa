@@ -199,8 +199,8 @@ function sendJSON(res, statusCode, data) {
   res.end(JSON.stringify(data));
 }
 
-// Main HTTP Server
-const server = http.createServer(async (req, res) => {
+// Main HTTP Request Handler
+const handleRequest = async (req, res) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
@@ -561,7 +561,9 @@ const server = http.createServer(async (req, res) => {
 
     serveStaticFile(filePath, res);
   });
-});
+};
+
+const server = http.createServer(handleRequest);
 
 function serveStaticFile(filePath, res) {
   const ext = path.extname(filePath).toLowerCase();
@@ -583,23 +585,26 @@ function serveStaticFile(filePath, res) {
   });
 }
 
-server.listen(PORT, () => {
-  console.log(`\n══════════════════════════════════════════════════════════════`);
-  console.log(`  ✦ CREATOPHORIA STUDIO — LEADS ENGINE & BACKEND ACTIVE ✦`);
-  console.log(`══════════════════════════════════════════════════════════════`);
-  console.log(`  ➤ Website:       http://localhost:${PORT}/`);
-  console.log(`  ➤ Admin Portal:  http://localhost:${PORT}/admin.html`);
-  console.log(`  ➤ Leads API:     http://localhost:${PORT}/api/leads`);
-  console.log(`  ➤ Leads CSV:     http://localhost:${PORT}/api/leads/export`);
-  console.log(`  ➤ Storage:       ${DATA_DIR}`);
-  console.log(`══════════════════════════════════════════════════════════════\n`);
-});
+// Only listen on port if run directly (e.g. node server.js)
+if (require.main === module) {
+  server.listen(PORT, () => {
+    console.log(`\n══════════════════════════════════════════════════════════════`);
+    console.log(`  ✦ CREATOPHORIA STUDIO — LEADS ENGINE & BACKEND ACTIVE ✦`);
+    console.log(`══════════════════════════════════════════════════════════════`);
+    console.log(`  ➤ Website:       http://localhost:${PORT}/`);
+    console.log(`  ➤ Admin Portal:  http://localhost:${PORT}/admin.html`);
+    console.log(`  ➤ Leads API:     http://localhost:${PORT}/api/leads`);
+    console.log(`  ➤ Leads CSV:     http://localhost:${PORT}/api/leads/export`);
+    console.log(`  ➤ Storage:       ${DATA_DIR}`);
+    console.log(`══════════════════════════════════════════════════════════════\n`);
+  });
+}
 
-module.exports = {
-  server,
-  readLeads,
-  saveLeads,
-  DATA_DIR,
-  LEADS_FILE,
-  CSV_FILE
-};
+// Support both standalone Node and Vercel serverless invocation
+module.exports = handleRequest;
+module.exports.server = server;
+module.exports.readLeads = readLeads;
+module.exports.saveLeads = saveLeads;
+module.exports.DATA_DIR = DATA_DIR;
+module.exports.LEADS_FILE = LEADS_FILE;
+module.exports.CSV_FILE = CSV_FILE;
