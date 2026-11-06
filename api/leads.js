@@ -93,17 +93,19 @@ async function fetchSupabaseLeads() {
 }
 
 module.exports = async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
+  try {
+    // CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(204).end();
-  }
+    if (req.method === 'OPTIONS') {
+      return res.status(204).end();
+    }
 
-  const { method, query } = req;
-  const leadId = query.id;
+    const method = req.method || 'GET';
+    const query = req.query || {};
+    const leadId = query.id;
 
   // ══════════════════════════════════════════════════════════════════════
   // 1. POST — Public Client Inquiry Submission
@@ -140,7 +142,7 @@ module.exports = async function handler(req, res) {
         message,
         status: 'new',
         notes: '',
-        ip_address: req.headers['x-forwarded-for'] || req.socket.remoteAddress || ''
+        ip_address: (req.headers && req.headers['x-forwarded-for']) || (req.socket && req.socket.remoteAddress) || ''
       };
 
       let createdLeadId = 'lead_' + Date.now();
@@ -356,4 +358,8 @@ module.exports = async function handler(req, res) {
   }
 
   return res.status(405).json({ success: false, error: 'Method not allowed' });
+  } catch (fatalErr) {
+    console.error('[API Fatal Error]:', fatalErr);
+    return res.status(500).json({ success: false, error: fatalErr.message });
+  }
 };
