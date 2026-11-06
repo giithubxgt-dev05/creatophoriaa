@@ -37,7 +37,9 @@ const url = require('url');
 });
 
 const PORT = process.env.PORT || 3000;
-let DATA_DIR = path.join(__dirname, 'data');
+const IS_SERVERLESS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+let DATA_DIR = IS_SERVERLESS ? '/tmp' : path.join(__dirname, 'data');
 let LEADS_FILE = path.join(DATA_DIR, 'leads.json');
 let CSV_FILE = path.join(DATA_DIR, 'leads.csv');
 
@@ -47,20 +49,23 @@ try {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
 } catch (err) {
-  console.warn('[Storage Notice] Using root directory for data files:', err.message);
-  DATA_DIR = __dirname;
-  LEADS_FILE = path.join(__dirname, 'leads.json');
-  CSV_FILE = path.join(__dirname, 'leads.csv');
+  DATA_DIR = '/tmp';
+  LEADS_FILE = path.join(DATA_DIR, 'leads.json');
+  CSV_FILE = path.join(DATA_DIR, 'leads.csv');
 }
 
-if (!fs.existsSync(LEADS_FILE)) {
-  fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2), 'utf8');
-}
+try {
+  if (!fs.existsSync(LEADS_FILE)) {
+    fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2), 'utf8');
+  }
+} catch (e) {}
 
-if (!fs.existsSync(CSV_FILE)) {
-  const csvHeaders = 'ID,Date,Name,Contact,Email,Service,Budget,Timeline,Message,Status,Notes\n';
-  fs.writeFileSync(CSV_FILE, csvHeaders, 'utf8');
-}
+try {
+  if (!fs.existsSync(CSV_FILE)) {
+    const csvHeaders = 'ID,Date,Name,Contact,Email,Service,Budget,Timeline,Message,Status,Notes\n';
+    fs.writeFileSync(CSV_FILE, csvHeaders, 'utf8');
+  }
+} catch (e) {}
 
 // Helper: Read all leads from JSON
 function readLeads() {

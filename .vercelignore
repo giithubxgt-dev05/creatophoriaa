@@ -1,0 +1,6 @@
+server.js
+start-server.bat
+deploy-vercel.bat
+push-github.bat
+supabase_schema.sql
+data/

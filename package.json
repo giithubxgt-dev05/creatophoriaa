@@ -1,10 +1,9 @@
 {
-  "name": "creatophoria-studio",
+  "name": "creatophoriaa",
   "version": "1.0.0",
   "description": "Creatophoria Studio — Ultra-premium portfolio & client inquiry backend engine",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "dev": "node server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0"
