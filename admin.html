@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creatophoria Studio — Leads Engine Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #07070A;
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --bg-card-hover: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.1);
+      --border-focus: rgba(0, 229, 168, 0.5);
+      --accent: #00E5A8;
+      --accent-cyan: #53F3FF;
+      --accent-purple: #7B61FF;
+      --accent-gold: #FFB800;
+      --text: #FFFFFF;
+      --text-muted: #AEB4C2;
+      --text-dim: #6D7482;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 32px 24px;
+      line-height: 1.5;
+    }
+
+    /* Ambient Glow Background */
+    .bg-glow {
+      position: fixed;
+      top: -200px;
+      left: 20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 229, 168, 0.08) 0%, rgba(83, 243, 255, 0.03) 40%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0,229,168,0.2), rgba(83,243,255,0.1));
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-weight: 800;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+      font-family: var(--font-body);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #07070A;
+      box-shadow: 0 0 20px rgba(0, 229, 168, 0.25);
+    }
+
+    .btn-accent:hover {
+      background: #1affbf;
+      box-shadow: 0 0 25px rgba(0, 229, 168, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* Analytics Metric Cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .metric-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .metric-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      gap: 4px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .search-filter-wrap {
+      display: flex;
+      gap: 12px;
+      flex-grow: 1;
+      max-width: 540px;
+    }
+
+    .search-input, .select-filter {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      outline: none;
+      font-family: var(--font-body);
+      transition: border-color 0.2s;
+    }
+
+    .search-input {
+      flex-grow: 1;
+    }
+
+    .search-input:focus, .select-filter:focus {
+      border-color: var(--accent);
+    }
+
+    .select-filter option {
+      background: #0E1016;
+      color: #fff;
+    }
+
+    /* Leads Grid */
+    .leads-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .lead-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    .lead-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .lead-card.status-new {
+      border-left: 4px solid var(--accent);
+    }
+
+    .lead-card.status-in_discussion {
+      border-left: 4px solid var(--accent-cyan);
+    }
+
+    .lead-card.status-booked {
+      border-left: 4px solid var(--accent-purple);
+    }
+
+    .lead-card.status-archived {
+      border-left: 4px solid var(--text-dim);
+      opacity: 0.7;
+    }
+
+    .lead-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .lead-identity {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .lead-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(83,243,255,0.15), rgba(0,229,168,0.15));
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-size: 1.1rem;
+    }
+
+    .lead-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .lead-meta {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badges-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-service {
+      background: rgba(0, 229, 168, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(0, 229, 168, 0.25);
+    }
+
+    .badge-budget {
+      background: rgba(123, 97, 255, 0.12);
+      color: var(--accent-purple);
+      border: 1px solid rgba(123, 97, 255, 0.25);
+    }
+
+    .badge-timeline {
+      background: rgba(83, 243, 255, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(83, 243, 255, 0.25);
+    }
+
+    /* Contact Details & Quick Actions */
+    .lead-body-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr 220px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .lead-body-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+
+    .contact-channels {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+
+    .contact-link.whatsapp {
+      color: #25D366;
+      border-color: rgba(37, 211, 102, 0.2);
+    }
+    .contact-link.whatsapp:hover {
+      background: rgba(37, 211, 102, 0.1);
+    }
+
+    .lead-message-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 0.9rem;
+      color: #D6DAE4;
+      line-height: 1.6;
+    }
+
+    .lead-message-title {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .lead-actions-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .status-select option {
+      background: #0E1016;
+    }
+
+    .notes-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-family: var(--font-body);
+      resize: vertical;
+      min-height: 60px;
+      outline: none;
+    }
+
+    .notes-input:focus {
+      border-color: var(--accent);
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: #FF5A5F;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+    }
+
+    .empty-icon {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    .empty-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+    }
+
+    .empty-text {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0E1016;
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 229, 168, 0.2);
+      font-size: 0.86rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── AUTHENTICATION GATE MODAL ────────────────────────────── */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 7, 10, 0.94);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      padding: 24px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .auth-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 44px 36px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 229, 168, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .auth-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: rgba(0, 229, 168, 0.1);
+      border: 1px solid rgba(0, 229, 168, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .auth-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .auth-sub {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .auth-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      outline: none;
+      letter-spacing: 0.15em;
+      text-align: center;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .auth-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 229, 168, 0.25);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #07070A;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s;
+      font-family: var(--font-body);
+    }
+
+    .auth-btn:hover {
+      background: #1affbf;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0, 229, 168, 0.35);
+    }
+
+    .auth-error {
+      display: none;
+      font-size: 0.8rem;
+      color: #FF5A5F;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Private Founder Lock Screen -->
+  <div class="auth-overlay" id="authOverlay">
+    <div class="auth-card">
+      <div class="auth-icon-wrap">🔒</div>
+      <h2 class="auth-title">Creatophoria Studio</h2>
+      <p class="auth-sub">Private Founder Access. Enter your secret passcode to unlock client inquiries.</p>
+      <form class="auth-form" id="authForm">
+        <input type="password" id="authKeyInput" class="auth-input" placeholder="••••••••••••" autocomplete="current-password" required />
+        <button type="submit" class="auth-btn" id="btnUnlock">
+          <span>Unlock Portal</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="auth-error" id="authError">⚠️ Access Denied: Incorrect passcode</div>
+      </form>
+    </div>
+  </div>
+
+  <div class="bg-glow"></div>
+
+  <div class="container" id="mainContainer">
+    <!-- Header -->
+    <header>
+      <div class="brand-wrap">
+        <div class="brand-logo">CS</div>
+        <div>
+          <h1 class="brand-title">Creatophoria Studio</h1>
+          <div class="brand-subtitle">
+            <span class="live-dot"></span>
+            <span>Founder Leads Portal · Secure Session</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/" target="_blank" class="btn btn-secondary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Live Website
+        </a>
+        <button id="btnRefresh" class="btn btn-secondary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Refresh
+        </button>
+        <a id="btnExport" href="/api/leads/export" class="btn btn-accent" download="creatophoria_leads.csv">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export CSV
+        </a>
+        <button id="btnLock" class="btn btn-secondary" style="border-color: rgba(255,90,95,0.3); color: #FF9B9E;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2"/></svg>
+          Lock
+        </button>
+      </div>
+    </header>
+
+    <!-- Metrics Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card" style="--card-accent: #00E5A8;">
+        <div class="metric-label">Total Inquiries</div>
+        <div class="metric-value" id="statTotal">0</div>
+        <div class="metric-sub">Lifetime leads collected</div>
+      </div>
+      <div class="metric-card" style="--card-accent: #53F3FF;">
+        <div class="metric-label">New / Action Required</div>
+        <div class="metric-value" id="statNew" style="color: var(--accent);">0</div>
+        <div class="metric-sub">Awaiting response</div>
+      </div>
+      <div class="metric-card" style="--card-accent: #7B61FF;">
+        <div class="metric-label">In Discussion / Booked</div>
+        <div class="metric-value" id="statBooked" style="color: var(--accent-purple);">0</div>
+        <div class="metric-sub">Active client dialogues</div>
+      </div>
+      <div class="metric-card" style="--card-accent: #FFB800;">
+        <div class="metric-label">Top Service</div>
+        <div class="metric-value" id="statTopService" style="font-size: 1.3rem; line-height: 1.6; color: var(--accent-gold);">None yet</div>
+        <div class="metric-sub">Highest client demand</div>
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <div class="filter-tabs">
+        <button class="tab-btn active" data-status="all">All Leads</button>
+        <button class="tab-btn" data-status="new">New</button>
+        <button class="tab-btn" data-status="contacted">Contacted</button>
+        <button class="tab-btn" data-status="in_discussion">In Discussion</button>
+        <button class="tab-btn" data-status="booked">Booked</button>
+        <button class="tab-btn" data-status="archived">Archived</button>
+      </div>
+
+      <div class="search-filter-wrap">
+        <select id="serviceFilter" class="select-filter">
+          <option value="all">All Services</option>
+          <option value="Graphic Design">Graphic Design</option>
+          <option value="Video Editing">Video Editing</option>
+          <option value="Motion Graphics">Motion Graphics</option>
+          <option value="Brand Identity">Brand Identity</option>
+          <option value="UI/UX Design">UI/UX Design</option>
+          <option value="Social Media Design">Social Media Design</option>
+          <option value="Thumbnail Design">Thumbnail Design</option>
+          <option value="Creative Strategy">Creative Strategy</option>
+          <option value="Complete Creative Package">Complete Package</option>
+        </select>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by name, contact, email..." />
+      </div>
+    </div>
+
+    <!-- Leads List -->
+    <div class="leads-container" id="leadsList">
+      <div class="empty-state">
+        <div class="empty-icon">✦</div>
+        <div class="empty-title">Loading Client Inquiries...</div>
+        <div class="empty-text">Connecting to Creatophoria Leads Engine</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Changes saved</div>
+
+  <script>
+    let allLeads = [];
+    let currentStatus = 'all';
+    let currentService = 'all';
+    let searchQuery = '';
+
+    // Elements
+    const authOverlay = document.getElementById('authOverlay');
+    const authForm = document.getElementById('authForm');
+    const authKeyInput = document.getElementById('authKeyInput');
+    const authError = document.getElementById('authError');
+    const btnLock = document.getElementById('btnLock');
+    const btnExport = document.getElementById('btnExport');
+
+    const leadsList = document.getElementById('leadsList');
+    const statTotal = document.getElementById('statTotal');
+    const statNew = document.getElementById('statNew');
+    const statBooked = document.getElementById('statBooked');
+    const statTopService = document.getElementById('statTopService');
+    const searchInput = document.getElementById('searchInput');
+    const serviceFilter = document.getElementById('serviceFilter');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const toast = document.getElementById('toast');
+
+    function getAdminKey() {
+      return sessionStorage.getItem('creatophoria_admin_key') || '';
+    }
+
+    function showAuthModal(show) {
+      if (show) {
+        authOverlay.classList.remove('hidden');
+        authKeyInput.value = '';
+        authError.style.display = 'none';
+        setTimeout(() => authKeyInput.focus(), 100);
+      } else {
+        authOverlay.classList.add('hidden');
+      }
+    }
+
+    function updateExportLink(key) {
+      if (btnExport) {
+        btnExport.href = `/api/leads/export?key=${encodeURIComponent(key)}`;
+      }
+    }
+
+    // Auth Form Submit
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const enteredKey = authKeyInput.value.trim();
+      if (!enteredKey) return;
+
+      try {
+        const res = await fetch('/api/stats', {
+          headers: { 'x-admin-key': enteredKey }
+        });
+
+        if (res.ok) {
+          sessionStorage.setItem('creatophoria_admin_key', enteredKey);
+          authError.style.display = 'none';
+          showAuthModal(false);
+          updateExportLink(enteredKey);
+          fetchLeads();
+          showToast('Access Granted · Welcome back');
+        } else {
+          authError.style.display = 'block';
+          authKeyInput.select();
+        }
+      } catch (err) {
+        authError.textContent = 'Server connection failed';
+        authError.style.display = 'block';
+      }
+    });
+
+    btnLock.addEventListener('click', () => {
+      sessionStorage.removeItem('creatophoria_admin_key');
+      showAuthModal(true);
+      showToast('Portal Locked');
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // Fetch leads from backend
+    async function fetchLeads() {
+      const key = getAdminKey();
+      if (!key) {
+        showAuthModal(true);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/leads', {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': key
+          }
+        });
+
+        if (res.status === 401) {
+          sessionStorage.removeItem('creatophoria_admin_key');
+          showAuthModal(true);
+          return;
+        }
+
+        const data = await res.json();
+        if (data.success) {
+          allLeads = data.leads || [];
+          renderStats();
+          filterAndRenderLeads();
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+        leadsList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <div class="empty-title">Backend Disconnected</div>
+            <div class="empty-text">Run <code>node server.js</code> in terminal to start the backend engine.</div>
+          </div>
+        `;
+      }
+    }
+
+    function renderStats() {
+      statTotal.textContent = allLeads.length;
+      statNew.textContent = allLeads.filter(l => l.status === 'new').length;
+      statBooked.textContent = allLeads.filter(l => l.status === 'booked' || l.status === 'in_discussion').length;
+
+      const counts = {};
+      allLeads.forEach(l => {
+        if (l.service) counts[l.service] = (counts[l.service] || 0) + 1;
+      });
+      let top = 'None yet';
+      let max = 0;
+      for (const s in counts) {
+        if (counts[s] > max) {
+          max = counts[s];
+          top = s;
+        }
+      }
+      statTopService.textContent = top;
+    }
+
+    function filterAndRenderLeads() {
+      let filtered = allLeads;
+
+      if (currentStatus !== 'all') {
+        filtered = filtered.filter(l => (l.status || 'new') === currentStatus);
+      }
+
+      if (currentService !== 'all') {
+        filtered = filtered.filter(l => (l.service || '') === currentService);
+      }
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(l =>
+          (l.name && l.name.toLowerCase().includes(q)) ||
+          (l.contact && l.contact.toLowerCase().includes(q)) ||
+          (l.email && l.email.toLowerCase().includes(q)) ||
+          (l.message && l.message.toLowerCase().includes(q)) ||
+          (l.notes && l.notes.toLowerCase().includes(q))
+        );
+      }
+
+      if (filtered.length === 0) {
+        leadsList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📂</div>
+            <div class="empty-title">No client inquiries found</div>
+            <div class="empty-text">Try adjusting your filters or test the contact form on the website.</div>
+          </div>
+        `;
+        return;
+      }
+
+      leadsList.innerHTML = filtered.map(lead => {
+        const initials = (lead.name || 'C')
+          .split(' ')
+          .map(n => n[0])
+          .slice(0, 2)
+          .join('')
+          .toUpperCase();
+
+        const cleanPhone = (lead.contact || '').replace(/[^0-9]/g, '');
+        const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=Hi%20${encodeURIComponent(lead.name || '')},%20this%20is%20Creatophoria%20Studio%20regarding%20your%20project%20inquiry!` : '';
+
+        return `
+          <div class="lead-card status-${lead.status || 'new'}" id="card-${lead.id}">
+            <div class="lead-header">
+              <div class="lead-identity">
+                <div class="lead-avatar">${initials}</div>
+                <div>
+                  <div class="lead-name">${escapeHTML(lead.name || 'Anonymous')}</div>
+                  <div class="lead-meta">
+                    <span>${escapeHTML(lead.formattedDate || new Date(lead.createdAt).toLocaleDateString())}</span>
+                    <span>•</span>
+                    <span>ID: ${lead.id.slice(-6)}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="badges-row">
+                <span class="badge badge-service">◈ ${escapeHTML(lead.service || 'Service Required')}</span>
+                ${lead.budget ? `<span class="badge badge-budget">💎 ${escapeHTML(lead.budget)}</span>` : ''}
+                ${lead.timeline ? `<span class="badge badge-timeline">⏱ ${escapeHTML(lead.timeline)}</span>` : ''}
+              </div>
+            </div>
+
+            <div class="lead-body-grid">
+              <!-- Contact Links -->
+              <div class="contact-channels">
+                ${lead.contact ? `
+                  <a href="tel:${escapeHTML(lead.contact)}" class="contact-link" title="Call directly">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <span>${escapeHTML(lead.contact)}</span>
+                  </a>
+                ` : ''}
+
+                ${waLink ? `
+                  <a href="${waLink}" target="_blank" class="contact-link whatsapp" title="Chat on WhatsApp">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.78 14.07c-.24.68-1.4 1.34-1.94 1.42-.49.07-1.12.1-3.26-.79-2.73-1.14-4.5-3.89-4.63-4.07-.14-.19-1.1-1.46-1.1-2.78s.69-1.97.94-2.24c.24-.26.54-.33.72-.33.18 0 .36 0 .52.01.17.01.4.06.6.55.22.53.75 1.83.82 1.96.07.14.12.3.02.49-.09.2-.14.32-.29.49-.14.17-.3.38-.43.51-.14.14-.29.3-.13.57.17.28.74 1.22 1.58 1.97 1.09.97 2 .1.27 2.29.28.29.07.46-.04.63-.16.17-.18.73-.85.93-1.14.2-.29.4-.24.67-.14.28.1 1.76.83 2.06.98.3.15.5.22.58.34.07.13.07.75-.17 1.43z"/></svg>
+                    <span>WhatsApp Chat</span>
+                  </a>
+                ` : ''}
+
+                ${lead.email ? `
+                  <a href="mailto:${escapeHTML(lead.email)}?subject=Creatophoria%20Studio%20x%20${encodeURIComponent(lead.name || '')}" class="contact-link" title="Send Email">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>${escapeHTML(lead.email)}</span>
+                  </a>
+                ` : ''}
+              </div>
+
+              <!-- Message Brief -->
+              <div class="lead-message-box">
+                <div class="lead-message-title">Project Vision & Brief</div>
+                <div>${escapeHTML(lead.message || 'No project description provided.')}</div>
+              </div>
+
+              <!-- Admin Controls -->
+              <div class="lead-actions-box">
+                <label style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; font-weight:700;">Status</label>
+                <select class="status-select" onchange="updateLeadStatus('${lead.id}', this.value)">
+                  <option value="new" ${lead.status === 'new' ? 'selected' : ''}>🟢 New Inquiry</option>
+                  <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>💬 Contacted</option>
+                  <option value="in_discussion" ${lead.status === 'in_discussion' ? 'selected' : ''}>🔵 In Discussion</option>
+                  <option value="booked" ${lead.status === 'booked' ? 'selected' : ''}>🟣 Booked / Active</option>
+                  <option value="archived" ${lead.status === 'archived' ? 'selected' : ''}>⚪ Archived</option>
+                </select>
+
+                <textarea class="notes-input" placeholder="Studio notes (autosaves)..." onchange="updateLeadNotes('${lead.id}', this.value)">${escapeHTML(lead.notes || '')}</textarea>
+
+                <button class="delete-btn" onclick="deleteLead('${lead.id}')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  Delete Lead
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function updateLeadStatus(id, newStatus) {
+      try {
+        const res = await fetch(`/api/leads/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': getAdminKey()
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          const l = allLeads.find(item => item.id === id);
+          if (l) l.status = newStatus;
+          renderStats();
+          filterAndRenderLeads();
+          showToast(`Status updated to ${newStatus}`);
+        }
+      } catch (e) {
+        showToast('Error updating status');
+      }
+    }
+
+    async function updateLeadNotes(id, notes) {
+      try {
+        const res = await fetch(`/api/leads/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': getAdminKey()
+          },
+          body: JSON.stringify({ notes })
+        });
+        const data = await res.json();
+        if (data.success) {
+          const l = allLeads.find(item => item.id === id);
+          if (l) l.notes = notes;
+          showToast('Notes updated');
+        }
+      } catch (e) {
+        showToast('Error saving notes');
+      }
+    }
+
+    async function deleteLead(id) {
+      if (!confirm('Are you sure you want to delete this lead?')) return;
+      try {
+        const res = await fetch(`/api/leads/${id}`, {
+          method: 'DELETE',
+          headers: { 'x-admin-key': getAdminKey() }
+        });
+        const data = await res.json();
+        if (data.success) {
+          allLeads = allLeads.filter(l => l.id !== id);
+          renderStats();
+          filterAndRenderLeads();
+          showToast('Lead deleted');
+        }
+      } catch (e) {
+        showToast('Error deleting lead');
+      }
+    }
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Event listeners
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentStatus = btn.dataset.status;
+        filterAndRenderLeads();
+      });
+    });
+
+    serviceFilter.addEventListener('change', e => {
+      currentService = e.target.value;
+      filterAndRenderLeads();
+    });
+
+    searchInput.addEventListener('input', e => {
+      searchQuery = e.target.value;
+      filterAndRenderLeads();
+    });
+
+    btnRefresh.addEventListener('click', () => {
+      fetchLeads();
+      showToast('Dashboard refreshed');
+    });
+
+    // Auto poll every 20s if authenticated
+    setInterval(() => {
+      if (getAdminKey() && !authOverlay.classList.contains('hidden')) {
+        // do nothing if locked
+      } else if (getAdminKey()) {
+        fetchLeads();
+      }
+    }, 20000);
+
+    // Initial load check
+    const savedKey = getAdminKey();
+    if (!savedKey) {
+      showAuthModal(true);
+    } else {
+      updateExportLink(savedKey);
+      fetchLeads();
+    }
+  </script>
+</body>
+</html>

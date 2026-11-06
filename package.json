@@ -1,0 +1,24 @@
+{
+  "name": "creatophoria-studio",
+  "version": "1.0.0",
+  "description": "Creatophoria Studio — Ultra-premium portfolio & client inquiry backend engine",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "creative-studio",
+    "portfolio",
+    "leads-backend",
+    "agency"
+  ],
+  "author": "Creatophoria Studio",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0"
+  }
+}

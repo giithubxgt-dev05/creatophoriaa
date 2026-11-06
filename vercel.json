@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/contact", "destination": "/api/leads" },
+    { "source": "/api/stats", "destination": "/api/leads?action=stats" },
+    { "source": "/api/leads/export", "destination": "/api/leads?export=csv" },
+    { "source": "/api/leads/:id", "destination": "/api/leads?id=:id" }
+  ]
+}

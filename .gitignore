@@ -1,0 +1,33 @@
+# Node & Dependencies
+node_modules/
+
+# Environment Variables & Secrets (CRITICAL - DO NOT REMOVE)
+.env
+.env*
+*.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# MCP, Antigravity & Agent configs containing project URLs
+.mcp.json
+mcp_config.json
+
+# Local Leads Data & Customer Database files
+data/
+*.tmp
+leads.json
+leads.csv
+*.csv
+
+# Logs & System Artifacts
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# Vercel Cache & Metadata
+.vercel
