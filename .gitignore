@@ -1,4 +1,6 @@
 # Node & Dependencies
+package.json
+package-lock.json
 node_modules/
 
 # Environment Variables & Secrets (CRITICAL - DO NOT REMOVE)
