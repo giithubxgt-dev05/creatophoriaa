@@ -1,4 +1,6 @@
 server.js
+package.json
+package-lock.json
 start-server.bat
 deploy-vercel.bat
 push-github.bat
