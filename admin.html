@@ -870,7 +870,7 @@
 
     function updateExportLink(key) {
       if (btnExport) {
-        btnExport.href = `/api/leads/export?key=${encodeURIComponent(key)}`;
+        btnExport.href = `/api/leads?export=csv&key=${encodeURIComponent(key)}`;
       }
     }
 
@@ -1096,7 +1096,7 @@
 
     async function updateLeadStatus(id, newStatus) {
       try {
-        const res = await fetch(`/api/leads/${id}`, {
+        const res = await fetch(`/api/leads?id=${encodeURIComponent(id)}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -1119,7 +1119,7 @@
 
     async function updateLeadNotes(id, notes) {
       try {
-        const res = await fetch(`/api/leads/${id}`, {
+        const res = await fetch(`/api/leads?id=${encodeURIComponent(id)}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -1141,7 +1141,7 @@
     async function deleteLead(id) {
       if (!confirm('Are you sure you want to delete this lead?')) return;
       try {
-        const res = await fetch(`/api/leads/${id}`, {
+        const res = await fetch(`/api/leads?id=${encodeURIComponent(id)}`, {
           method: 'DELETE',
           headers: { 'x-admin-key': getAdminKey() }
         });

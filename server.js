@@ -447,13 +447,13 @@ const handleRequest = async (req, res) => {
     return sendJSON(res, 200, { success: true, stats });
   }
 
-  // 4. PATCH /api/leads/:id — Update lead status or notes (Protected)
-  if (pathname.startsWith('/api/leads/') && req.method === 'PATCH') {
+  // 4. PATCH /api/leads or /api/leads/:id — Update lead status or notes (Protected)
+  if ((pathname.startsWith('/api/leads/') || pathname === '/api/leads') && req.method === 'PATCH') {
     if (!isAuthorized(req, parsedUrl.query)) {
       return sendJSON(res, 401, { success: false, error: 'Unauthorized: Access Denied' });
     }
 
-    const id = pathname.replace('/api/leads/', '');
+    const id = pathname.startsWith('/api/leads/') ? pathname.replace('/api/leads/', '') : (parsedUrl.query && parsedUrl.query.id);
     try {
       const data = await parseBody(req);
       const leads = readLeads();
@@ -489,13 +489,13 @@ const handleRequest = async (req, res) => {
     }
   }
 
-  // 5. DELETE /api/leads/:id — Delete lead (Protected)
-  if (pathname.startsWith('/api/leads/') && req.method === 'DELETE') {
+  // 5. DELETE /api/leads or /api/leads/:id — Delete lead (Protected)
+  if ((pathname.startsWith('/api/leads/') || pathname === '/api/leads') && req.method === 'DELETE') {
     if (!isAuthorized(req, parsedUrl.query)) {
       return sendJSON(res, 401, { success: false, error: 'Unauthorized: Access Denied' });
     }
 
-    const id = pathname.replace('/api/leads/', '');
+    const id = pathname.startsWith('/api/leads/') ? pathname.replace('/api/leads/', '') : (parsedUrl.query && parsedUrl.query.id);
     const leads = readLeads();
     const filtered = leads.filter(l => l.id !== id);
     saveLeads(filtered);
@@ -518,8 +518,8 @@ const handleRequest = async (req, res) => {
     return sendJSON(res, 200, { success: true, message: 'Lead deleted successfully' });
   }
 
-  // 6. GET /api/leads/export — Export CSV (Protected)
-  if (pathname === '/api/leads/export' && req.method === 'GET') {
+  // 6. GET /api/leads/export or /api/leads?export=csv — Export CSV (Protected)
+  if ((pathname === '/api/leads/export' || (pathname === '/api/leads' && parsedUrl.query && parsedUrl.query.export === 'csv')) && req.method === 'GET') {
     if (!isAuthorized(req, parsedUrl.query)) {
       res.writeHead(401, { 'Content-Type': 'text/plain' });
       res.end('401 Unauthorized: Invalid or missing admin key');
